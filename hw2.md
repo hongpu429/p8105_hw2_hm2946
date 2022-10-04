@@ -86,6 +86,8 @@ tran_ent %>%
     ## 10 Atlantic Av-Barclays Ctr 4 Avenue
     ## # … with 455 more rows
 
+## 465 distinct stations
+
 ## this finds ADA compliant stations
 
 ``` r
@@ -110,6 +112,8 @@ tran_ent %>%
     ## 10 Roosevelt Island               63rd Street    
     ## # … with 74 more rows
 
+## 84 ADA compliant
+
 ## this finds proportion of station entrances / exits without vending allow entrance
 
 ``` r
@@ -121,4 +125,64 @@ tran_ent %>%
 
     ## [1] 0.3770492
 
-## 
+## the proportion is 0.3770492
+
+``` r
+tran_ent %>% 
+  pivot_longer(
+    route1:route11,
+    names_to = "route_num",
+    values_to = "route") %>% 
+  filter(route == "A") %>% 
+  select(station_name, line) %>% 
+  distinct
+```
+
+    ## # A tibble: 60 × 2
+    ##    station_name                  line           
+    ##    <chr>                         <chr>          
+    ##  1 Times Square                  42nd St Shuttle
+    ##  2 125th St                      8 Avenue       
+    ##  3 145th St                      8 Avenue       
+    ##  4 14th St                       8 Avenue       
+    ##  5 168th St - Washington Heights 8 Avenue       
+    ##  6 175th St                      8 Avenue       
+    ##  7 181st St                      8 Avenue       
+    ##  8 190th St                      8 Avenue       
+    ##  9 34th St                       8 Avenue       
+    ## 10 42nd St                       8 Avenue       
+    ## # … with 50 more rows
+
+``` r
+tran_ent %>% 
+  pivot_longer(
+    route1:route11,
+    names_to = "route_num",
+    values_to = "route") %>% 
+  filter(route == "A", ada == TRUE) %>% 
+  select(station_name, line) %>% 
+  distinct
+```
+
+    ## # A tibble: 17 × 2
+    ##    station_name                  line            
+    ##    <chr>                         <chr>           
+    ##  1 14th St                       8 Avenue        
+    ##  2 168th St - Washington Heights 8 Avenue        
+    ##  3 175th St                      8 Avenue        
+    ##  4 34th St                       8 Avenue        
+    ##  5 42nd St                       8 Avenue        
+    ##  6 59th St                       8 Avenue        
+    ##  7 Inwood - 207th St             8 Avenue        
+    ##  8 West 4th St                   8 Avenue        
+    ##  9 World Trade Center            8 Avenue        
+    ## 10 Times Square-42nd St          Broadway        
+    ## 11 59th St-Columbus Circle       Broadway-7th Ave
+    ## 12 Times Square                  Broadway-7th Ave
+    ## 13 8th Av                        Canarsie        
+    ## 14 Franklin Av                   Franklin        
+    ## 15 Euclid Av                     Fulton          
+    ## 16 Franklin Av                   Fulton          
+    ## 17 Howard Beach                  Rockaway
+
+## 60 distnct stations serve the A train, and 17 are ada compliant

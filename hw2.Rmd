@@ -40,6 +40,7 @@ tran_ent %>%
   select(station_name,line) %>% 
   distinct
 ```
+## 465 distinct stations
 
 
 ## this finds ADA compliant stations
@@ -49,6 +50,7 @@ tran_ent %>%
   select(station_name,line) %>% 
   distinct
 ```
+## 84 ADA compliant
 
 
 ## this finds proportion of station entrances / exits without vending allow entrance
@@ -58,5 +60,25 @@ tran_ent %>%
   pull(entry) %>% 
   mean
 ```
+## the proportion is 0.3770492
 
-## 
+```{r}
+tran_ent %>% 
+  pivot_longer(
+    route1:route11,
+    names_to = "route_num",
+    values_to = "route") %>% 
+  filter(route == "A") %>% 
+  select(station_name, line) %>% 
+  distinct
+
+tran_ent %>% 
+  pivot_longer(
+    route1:route11,
+    names_to = "route_num",
+    values_to = "route") %>% 
+  filter(route == "A", ada == TRUE) %>% 
+  select(station_name, line) %>% 
+  distinct
+```
+## 60 distnct stations serve the A train, and 17 are ada compliant
