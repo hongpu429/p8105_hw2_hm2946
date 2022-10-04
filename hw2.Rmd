@@ -1,0 +1,28 @@
+---
+title: "p8105_hw2_hm2946.Rmd"
+author: "min"
+date: "2022-10-04"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+```{r}
+tran_ent = 
+  read_csv(
+    "./NYC_Transit_Subway_Entrance_And_Exit_Data.csv",
+    col_types = cols(Route8 = "c", Route9 = "c",
+                     Route10 = "c", Route11 = "c")
+  ) %>% 
+  janitor::clean_names() %>% 
+  select(
+     line, station_name, station_latitude, station_longitude, 
+     starts_with("Route"), entry, exit_only, vending, 
+     entrance_type, ada) %>% 
+  mutate(entry = ifelse(entry == "YES", TRUE, FALSE))
+
+tran_ent
+```
