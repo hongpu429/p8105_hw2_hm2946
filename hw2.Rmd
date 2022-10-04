@@ -28,6 +28,10 @@ tran_ent =
 
 tran_ent
 ```
+## First, load the data, and modify the column types;
+## Second, clean the data, it contatins line, station_name, station_latitude, station_longitude, Routes, entry, exit_only, vending, entrance_type, ada. The size is 1,868 × 20.
+## Last, we convert the entry variable from character to a logical variable, and we know this data is not tidy yet.
+
 
 
 ## this calculates the number of distinct stations
@@ -46,3 +50,13 @@ tran_ent %>%
   distinct
 ```
 
+
+## this finds proportion of station entrances / exits without vending allow entrance
+```{r}
+tran_ent %>% 
+  filter(vending == "NO") %>% 
+  pull(entry) %>% 
+  mean
+```
+
+## 
