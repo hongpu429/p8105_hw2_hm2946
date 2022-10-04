@@ -10,6 +10,8 @@ library(tidyverse)
 library(readxl)
 ```
 
+## Question 1
+
 ```{r}
 tran_ent = 
   read_csv(
@@ -26,3 +28,21 @@ tran_ent =
 
 tran_ent
 ```
+
+
+## this calculates the number of distinct stations
+```{r}
+tran_ent %>% 
+  select(station_name,line) %>% 
+  distinct
+```
+
+
+## this finds ADA compliant stations
+```{r}
+tran_ent %>% 
+  filter(ada == TRUE) %>% 
+  select(station_name,line) %>% 
+  distinct
+```
+
