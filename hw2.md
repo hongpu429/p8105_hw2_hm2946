@@ -196,28 +196,30 @@ mr_trash =
              range = "A2:N549") %>% 
   janitor::clean_names() %>% 
   drop_na(dumpster) %>% 
-  mutate(sports_balls = as.integer(round(sports_balls)))
+  mutate(sports_balls = as.integer(round(sports_balls))) %>%
+  mutate(year = as.double(year)) %>%
+  select(-date, weight = weight_tons,
+         volume = volume_cubic_yards)
 
 mr_trash
 ```
 
-    ## # A tibble: 547 × 14
-    ##    dumpster month year  date                weight_tons volume…¹ plast…² polys…³
-    ##       <dbl> <chr> <chr> <dttm>                    <dbl>    <dbl>   <dbl>   <dbl>
-    ##  1        1 May   2014  2014-05-16 00:00:00        4.31       18    1450    1820
-    ##  2        2 May   2014  2014-05-16 00:00:00        2.74       13    1120    1030
-    ##  3        3 May   2014  2014-05-16 00:00:00        3.45       15    2450    3100
-    ##  4        4 May   2014  2014-05-17 00:00:00        3.1        15    2380    2730
-    ##  5        5 May   2014  2014-05-17 00:00:00        4.06       18     980     870
-    ##  6        6 May   2014  2014-05-20 00:00:00        2.71       13    1430    2140
-    ##  7        7 May   2014  2014-05-21 00:00:00        1.91        8     910    1090
-    ##  8        8 May   2014  2014-05-28 00:00:00        3.7        16    3580    4310
-    ##  9        9 June  2014  2014-06-05 00:00:00        2.52       14    2400    2790
-    ## 10       10 June  2014  2014-06-11 00:00:00        3.76       18    1340    1730
-    ## # … with 537 more rows, 6 more variables: cigarette_butts <dbl>,
-    ## #   glass_bottles <dbl>, grocery_bags <dbl>, chip_bags <dbl>,
-    ## #   sports_balls <int>, homes_powered <dbl>, and abbreviated variable names
-    ## #   ¹​volume_cubic_yards, ²​plastic_bottles, ³​polystyrene
+    ## # A tibble: 547 × 13
+    ##    dumpster month  year weight volume plastic_…¹ polys…² cigar…³ glass…⁴ groce…⁵
+    ##       <dbl> <chr> <dbl>  <dbl>  <dbl>      <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+    ##  1        1 May    2014   4.31     18       1450    1820  126000      72     584
+    ##  2        2 May    2014   2.74     13       1120    1030   91000      42     496
+    ##  3        3 May    2014   3.45     15       2450    3100  105000      50    1080
+    ##  4        4 May    2014   3.1      15       2380    2730  100000      52     896
+    ##  5        5 May    2014   4.06     18        980     870  120000      72     368
+    ##  6        6 May    2014   2.71     13       1430    2140   90000      46     672
+    ##  7        7 May    2014   1.91      8        910    1090   56000      32     416
+    ##  8        8 May    2014   3.7      16       3580    4310  112000      58    1552
+    ##  9        9 June   2014   2.52     14       2400    2790   98000      49     984
+    ## 10       10 June   2014   3.76     18       1340    1730  130000      75     448
+    ## # … with 537 more rows, 3 more variables: chip_bags <dbl>, sports_balls <int>,
+    ## #   homes_powered <dbl>, and abbreviated variable names ¹​plastic_bottles,
+    ## #   ²​polystyrene, ³​cigarette_butts, ⁴​glass_bottles, ⁵​grocery_bags
 
 ``` r
 pro_trash = 
@@ -225,25 +227,73 @@ pro_trash =
              "Professor Trash Wheel",
              range = "A2:M96") %>% 
   janitor::clean_names() %>% 
-  drop_na(dumpster)
+  drop_na(dumpster) %>%
+  select(-date, weight = weight_tons,
+         volume = volume_cubic_yards)
 
 pro_trash
 ```
 
-    ## # A tibble: 94 × 13
-    ##    dumpster month     year date                weight_…¹ volum…² plast…³ polys…⁴
-    ##       <dbl> <chr>    <dbl> <dttm>                  <dbl>   <dbl>   <dbl>   <dbl>
-    ##  1        1 January   2017 2017-01-02 00:00:00      1.79      15    1950    6080
-    ##  2        2 January   2017 2017-01-30 00:00:00      1.58      15    9540   11230
-    ##  3        3 February  2017 2017-02-26 00:00:00      2.32      18    8350    9210
-    ##  4        4 February  2017 2017-02-26 00:00:00      3.72      15    8590    1030
-    ##  5        5 February  2017 2017-02-28 00:00:00      1.45      15    7830    9950
-    ##  6        6 March     2017 2017-03-30 00:00:00      1.71      15    8210   10340
-    ##  7        7 April     2017 2017-04-01 00:00:00      1.82      15    9830   11020
-    ##  8        8 April     2017 2017-04-20 00:00:00      2.37      15    9240    8760
-    ##  9        9 May       2017 2017-05-10 00:00:00      2.64      15    9540    8810
-    ## 10       10 May       2017 2017-05-26 00:00:00      2.78      15    8230    7800
-    ## # … with 84 more rows, 5 more variables: cigarette_butts <dbl>,
-    ## #   glass_bottles <dbl>, grocery_bags <dbl>, chip_bags <dbl>,
-    ## #   homes_powered <dbl>, and abbreviated variable names ¹​weight_tons,
-    ## #   ²​volume_cubic_yards, ³​plastic_bottles, ⁴​polystyrene
+    ## # A tibble: 94 × 12
+    ##    dumpster month     year weight volume plast…¹ polys…² cigar…³ glass…⁴ groce…⁵
+    ##       <dbl> <chr>    <dbl>  <dbl>  <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+    ##  1        1 January   2017   1.79     15    1950    6080   19700       8    3100
+    ##  2        2 January   2017   1.58     15    9540   11230   17600      14    5630
+    ##  3        3 February  2017   2.32     18    8350    9210   12000      19    6430
+    ##  4        4 February  2017   3.72     15    8590    1030   13000      21    5870
+    ##  5        5 February  2017   1.45     15    7830    9950   16000      18    7450
+    ##  6        6 March     2017   1.71     15    8210   10340   14000      23    9560
+    ##  7        7 April     2017   1.82     15    9830   11020   17000      26   11500
+    ##  8        8 April     2017   2.37     15    9240    8760   15000      14    9970
+    ##  9        9 May       2017   2.64     15    9540    8810   17000      28   12340
+    ## 10       10 May       2017   2.78     15    8230    7800   13000      22   13450
+    ## # … with 84 more rows, 2 more variables: chip_bags <dbl>, homes_powered <dbl>,
+    ## #   and abbreviated variable names ¹​plastic_bottles, ²​polystyrene,
+    ## #   ³​cigarette_butts, ⁴​glass_bottles, ⁵​grocery_bags
+
+``` r
+mr_trash = mutate(mr_trash, label = "mr")
+pro_trash = mutate(pro_trash, label = "pro")
+com_tidy =  bind_rows(mr_trash, pro_trash) %>%
+  janitor::clean_names() %>%
+  select(label, everything()) 
+
+com_tidy
+```
+
+    ## # A tibble: 641 × 14
+    ##    label dumpster month  year weight volume plastic_bo…¹ polys…² cigar…³ glass…⁴
+    ##    <chr>    <dbl> <chr> <dbl>  <dbl>  <dbl>        <dbl>   <dbl>   <dbl>   <dbl>
+    ##  1 mr           1 May    2014   4.31     18         1450    1820  126000      72
+    ##  2 mr           2 May    2014   2.74     13         1120    1030   91000      42
+    ##  3 mr           3 May    2014   3.45     15         2450    3100  105000      50
+    ##  4 mr           4 May    2014   3.1      15         2380    2730  100000      52
+    ##  5 mr           5 May    2014   4.06     18          980     870  120000      72
+    ##  6 mr           6 May    2014   2.71     13         1430    2140   90000      46
+    ##  7 mr           7 May    2014   1.91      8          910    1090   56000      32
+    ##  8 mr           8 May    2014   3.7      16         3580    4310  112000      58
+    ##  9 mr           9 June   2014   2.52     14         2400    2790   98000      49
+    ## 10 mr          10 June   2014   3.76     18         1340    1730  130000      75
+    ## # … with 631 more rows, 4 more variables: grocery_bags <dbl>, chip_bags <dbl>,
+    ## #   sports_balls <int>, homes_powered <dbl>, and abbreviated variable names
+    ## #   ¹​plastic_bottles, ²​polystyrene, ³​cigarette_butts, ⁴​glass_bottles
+
+## The size of the combined dataset is 641\*15, and it
+
+``` r
+com_tidy %>% 
+  filter(label == "pro") %>% 
+  select(weight) %>% 
+  sum()
+```
+
+    ## [1] 190.12
+
+``` r
+com_tidy %>% 
+  filter(label == "mr", year == 2020) %>% 
+  select(sports_balls) %>% 
+  sum()
+```
+
+    ## [1] 856

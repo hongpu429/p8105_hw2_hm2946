@@ -93,7 +93,10 @@ mr_trash =
              range = "A2:N549") %>% 
   janitor::clean_names() %>% 
   drop_na(dumpster) %>% 
-  mutate(sports_balls = as.integer(round(sports_balls)))
+  mutate(sports_balls = as.integer(round(sports_balls))) %>%
+  mutate(year = as.double(year)) %>%
+  select(-date, weight = weight_tons,
+         volume = volume_cubic_yards)
 
 mr_trash
 ```
@@ -104,8 +107,33 @@ pro_trash =
              "Professor Trash Wheel",
              range = "A2:M96") %>% 
   janitor::clean_names() %>% 
-  drop_na(dumpster)
+  drop_na(dumpster) %>%
+  select(-date, weight = weight_tons,
+         volume = volume_cubic_yards)
 
 pro_trash
+```
+
+```{r}
+mr_trash = mutate(mr_trash, label = "mr")
+pro_trash = mutate(pro_trash, label = "pro")
+com_tidy =  bind_rows(mr_trash, pro_trash) %>%
+  janitor::clean_names() %>%
+  select(label, everything()) 
+
+com_tidy
+```
+
+## The size of the combined dataset is 641*15, and it 
+```{r}
+com_tidy %>% 
+  filter(label == "pro") %>% 
+  select(weight) %>% 
+  sum()
+
+com_tidy %>% 
+  filter(label == "mr", year == 2020) %>% 
+  select(sports_balls) %>% 
+  sum()
 ```
 
