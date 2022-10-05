@@ -304,3 +304,46 @@ com_tidy %>%
 ```
 
     ## [1] 856
+
+## Qeustion 3
+
+``` r
+mon_data = read_csv("./pols-month.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(., mon, into = c("year","month","day")) %>% 
+  mutate(year = as.integer(year)) %>% 
+  mutate(month = as.integer(month)) %>% 
+  mutate(day = as.integer(day)) %>% 
+  mutate(president = prez_gop + prez_dem) %>% 
+  select(-prez_gop, -prez_dem, -day)
+```
+
+    ## Rows: 822 Columns: 9
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## dbl  (8): prez_gop, gov_gop, sen_gop, rep_gop, prez_dem, gov_dem, sen_dem, r...
+    ## date (1): mon
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+mon_data$month = month.abb[mon_data$month]
+
+mon_data
+```
+
+    ## # A tibble: 822 × 9
+    ##     year month gov_gop sen_gop rep_gop gov_dem sen_dem rep_dem president
+    ##    <int> <chr>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>     <dbl>
+    ##  1  1947 Jan        23      51     253      23      45     198         1
+    ##  2  1947 Feb        23      51     253      23      45     198         1
+    ##  3  1947 Mar        23      51     253      23      45     198         1
+    ##  4  1947 Apr        23      51     253      23      45     198         1
+    ##  5  1947 May        23      51     253      23      45     198         1
+    ##  6  1947 Jun        23      51     253      23      45     198         1
+    ##  7  1947 Jul        23      51     253      23      45     198         1
+    ##  8  1947 Aug        23      51     253      23      45     198         1
+    ##  9  1947 Sep        23      51     253      23      45     198         1
+    ## 10  1947 Oct        23      51     253      23      45     198         1
+    ## # … with 812 more rows

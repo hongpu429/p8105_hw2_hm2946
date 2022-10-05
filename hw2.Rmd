@@ -146,3 +146,21 @@ com_tidy %>%
   sum()
 ```
 
+
+
+## Qeustion 3
+
+```{r}
+mon_data = read_csv("./pols-month.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(., mon, into = c("year","month","day")) %>% 
+  mutate(year = as.integer(year)) %>% 
+  mutate(month = as.integer(month)) %>% 
+  mutate(day = as.integer(day)) %>% 
+  mutate(president = prez_gop + prez_dem) %>% 
+  select(-prez_gop, -prez_dem, -day)
+mon_data$month = month.abb[mon_data$month]
+
+mon_data
+```
+
