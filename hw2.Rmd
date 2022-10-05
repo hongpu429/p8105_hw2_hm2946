@@ -176,3 +176,14 @@ snp_data$month = month.abb[snp_data$month]
 snp_data
 ```
 
+```{r}
+une_data = read_csv("./unemployment.csv") %>% 
+  janitor::clean_names() %>% 
+  pivot_longer(
+    jan:dec,
+    names_to = "month",
+    values_to = "unemployment")
+
+une_data
+```
+

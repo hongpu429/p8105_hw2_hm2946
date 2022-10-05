@@ -386,3 +386,39 @@ snp_data
     ##  9    11 Mar   2068.
     ## 10    10 Jan   2018.
     ## # … with 777 more rows
+
+``` r
+une_data = read_csv("./unemployment.csv") %>% 
+  janitor::clean_names() %>% 
+  pivot_longer(
+    jan:dec,
+    names_to = "month",
+    values_to = "unemployment")
+```
+
+    ## Rows: 68 Columns: 13
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## dbl (13): Year, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+une_data
+```
+
+    ## # A tibble: 816 × 3
+    ##     year month unemployment
+    ##    <dbl> <chr>        <dbl>
+    ##  1  1948 jan            3.4
+    ##  2  1948 feb            3.8
+    ##  3  1948 mar            4  
+    ##  4  1948 apr            3.9
+    ##  5  1948 may            3.5
+    ##  6  1948 jun            3.6
+    ##  7  1948 jul            3.6
+    ##  8  1948 aug            3.9
+    ##  9  1948 sep            3.8
+    ## 10  1948 oct            3.7
+    ## # … with 806 more rows
