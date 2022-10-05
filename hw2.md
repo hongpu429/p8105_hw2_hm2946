@@ -227,7 +227,7 @@ pro_trash =
              "Professor Trash Wheel",
              range = "A2:M96") %>% 
   janitor::clean_names() %>% 
-  drop_na(dumpster) %>%
+  drop_na(dumpster) %>% 
   select(-date, weight = weight_tons,
          volume = volume_cubic_yards)
 
@@ -252,33 +252,40 @@ pro_trash
     ## #   ³​cigarette_butts, ⁴​glass_bottles, ⁵​grocery_bags
 
 ``` r
-mr_trash = mutate(mr_trash, label = "mr")
-pro_trash = mutate(pro_trash, label = "pro")
-com_tidy =  bind_rows(mr_trash, pro_trash) %>%
-  janitor::clean_names() %>%
+mr_trash = 
+  mutate(mr_trash, label = "mr") %>% 
+  pivot_longer(
+    plastic_bottles:sports_balls,
+    names_to = "trash_type",
+    values_to = "collect_number")
+pro_trash = mutate(pro_trash, label = "pro") %>% 
+  pivot_longer(
+    plastic_bottles:chip_bags,
+    names_to = "trash_type",
+    values_to = "collect_number")
+com_tidy =  bind_rows(mr_trash, pro_trash) %>% 
+  janitor::clean_names() %>% 
   select(label, everything()) 
 
 com_tidy
 ```
 
-    ## # A tibble: 641 × 14
-    ##    label dumpster month  year weight volume plastic_bo…¹ polys…² cigar…³ glass…⁴
-    ##    <chr>    <dbl> <chr> <dbl>  <dbl>  <dbl>        <dbl>   <dbl>   <dbl>   <dbl>
-    ##  1 mr           1 May    2014   4.31     18         1450    1820  126000      72
-    ##  2 mr           2 May    2014   2.74     13         1120    1030   91000      42
-    ##  3 mr           3 May    2014   3.45     15         2450    3100  105000      50
-    ##  4 mr           4 May    2014   3.1      15         2380    2730  100000      52
-    ##  5 mr           5 May    2014   4.06     18          980     870  120000      72
-    ##  6 mr           6 May    2014   2.71     13         1430    2140   90000      46
-    ##  7 mr           7 May    2014   1.91      8          910    1090   56000      32
-    ##  8 mr           8 May    2014   3.7      16         3580    4310  112000      58
-    ##  9 mr           9 June   2014   2.52     14         2400    2790   98000      49
-    ## 10 mr          10 June   2014   3.76     18         1340    1730  130000      75
-    ## # … with 631 more rows, 4 more variables: grocery_bags <dbl>, chip_bags <dbl>,
-    ## #   sports_balls <int>, homes_powered <dbl>, and abbreviated variable names
-    ## #   ¹​plastic_bottles, ²​polystyrene, ³​cigarette_butts, ⁴​glass_bottles
+    ## # A tibble: 4,393 × 9
+    ##    label dumpster month  year weight volume homes_powered trash_type     colle…¹
+    ##    <chr>    <dbl> <chr> <dbl>  <dbl>  <dbl>         <dbl> <chr>            <dbl>
+    ##  1 mr           1 May    2014   4.31     18             0 plastic_bottl…    1450
+    ##  2 mr           1 May    2014   4.31     18             0 polystyrene       1820
+    ##  3 mr           1 May    2014   4.31     18             0 cigarette_but…  126000
+    ##  4 mr           1 May    2014   4.31     18             0 glass_bottles       72
+    ##  5 mr           1 May    2014   4.31     18             0 grocery_bags       584
+    ##  6 mr           1 May    2014   4.31     18             0 chip_bags         1162
+    ##  7 mr           1 May    2014   4.31     18             0 sports_balls         7
+    ##  8 mr           2 May    2014   2.74     13             0 plastic_bottl…    1120
+    ##  9 mr           2 May    2014   2.74     13             0 polystyrene       1030
+    ## 10 mr           2 May    2014   2.74     13             0 cigarette_but…   91000
+    ## # … with 4,383 more rows, and abbreviated variable name ¹​collect_number
 
-## The size of the combined dataset is 641\*15, and it
+## The size of the combined dataset is 4393\*9, and it has important variables like year and weight. The total weight of trash collected by Professor Trash Wheel is 1140.72, and the total number of sports balls collected by Mr. Trash Wheel in 2020 is 856.
 
 ``` r
 com_tidy %>% 
@@ -287,12 +294,12 @@ com_tidy %>%
   sum()
 ```
 
-    ## [1] 190.12
+    ## [1] 1140.72
 
 ``` r
 com_tidy %>% 
-  filter(label == "mr", year == 2020) %>% 
-  select(sports_balls) %>% 
+  filter(label == "mr", year == 2020, trash_type == "sports_balls") %>% 
+  select(collect_number) %>% 
   sum()
 ```
 

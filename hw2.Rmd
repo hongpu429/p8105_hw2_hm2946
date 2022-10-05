@@ -107,7 +107,7 @@ pro_trash =
              "Professor Trash Wheel",
              range = "A2:M96") %>% 
   janitor::clean_names() %>% 
-  drop_na(dumpster) %>%
+  drop_na(dumpster) %>% 
   select(-date, weight = weight_tons,
          volume = volume_cubic_yards)
 
@@ -115,16 +115,25 @@ pro_trash
 ```
 
 ```{r}
-mr_trash = mutate(mr_trash, label = "mr")
-pro_trash = mutate(pro_trash, label = "pro")
-com_tidy =  bind_rows(mr_trash, pro_trash) %>%
-  janitor::clean_names() %>%
+mr_trash = 
+  mutate(mr_trash, label = "mr") %>% 
+  pivot_longer(
+    plastic_bottles:sports_balls,
+    names_to = "trash_type",
+    values_to = "collect_number")
+pro_trash = mutate(pro_trash, label = "pro") %>% 
+  pivot_longer(
+    plastic_bottles:chip_bags,
+    names_to = "trash_type",
+    values_to = "collect_number")
+com_tidy =  bind_rows(mr_trash, pro_trash) %>% 
+  janitor::clean_names() %>% 
   select(label, everything()) 
 
 com_tidy
 ```
 
-## The size of the combined dataset is 641*15, and it 
+## The size of the combined dataset is 4393*9, and it has important variables like year and weight. The total weight of trash collected by Professor Trash Wheel is 1140.72, and the total number of sports balls collected by Mr. Trash Wheel in 2020 is 856.
 ```{r}
 com_tidy %>% 
   filter(label == "pro") %>% 
@@ -132,8 +141,8 @@ com_tidy %>%
   sum()
 
 com_tidy %>% 
-  filter(label == "mr", year == 2020) %>% 
-  select(sports_balls) %>% 
+  filter(label == "mr", year == 2020, trash_type == "sports_balls") %>% 
+  select(collect_number) %>% 
   sum()
 ```
 
