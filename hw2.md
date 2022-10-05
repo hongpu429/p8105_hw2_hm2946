@@ -186,3 +186,19 @@ tran_ent %>%
     ## 17 Howard Beach                  Rockaway
 
 ## 60 distnct stations serve the A train, and 17 are ada compliant
+
+## Question 2
+
+``` r
+mr_trash = 
+  read_excel("./Trash-Wheel-Collection-Totals-7-2020-2.xlsx",
+             "Mr. Trash Wheel") %>% 
+  janitor::clean_names() %>% 
+  drop_na(dumpster) %>% 
+  mutate(sports_balls = as.integer(round(sports_balls)))
+```
+
+    ## New names:
+    ## • `` -> `...15`
+    ## • `` -> `...16`
+    ## • `` -> `...17`
