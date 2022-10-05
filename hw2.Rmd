@@ -88,10 +88,24 @@ tran_ent %>%
 
 ```{r}
 mr_trash = 
-  read_excel("./Trash-Wheel-Collection-Totals-7-2020-2.xlsx",
-             "Mr. Trash Wheel") %>% 
+  read_excel("./Trash Wheel Collection Data.xlsx",
+             "Mr. Trash Wheel",
+             range = "A2:N549") %>% 
   janitor::clean_names() %>% 
   drop_na(dumpster) %>% 
   mutate(sports_balls = as.integer(round(sports_balls)))
+
+mr_trash
+```
+
+```{r}
+pro_trash = 
+  read_excel("./Trash Wheel Collection Data.xlsx",
+             "Professor Trash Wheel",
+             range = "A2:M96") %>% 
+  janitor::clean_names() %>% 
+  drop_na(dumpster)
+
+pro_trash
 ```
 
