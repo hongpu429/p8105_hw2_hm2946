@@ -164,3 +164,15 @@ mon_data$month = month.abb[mon_data$month]
 mon_data
 ```
 
+```{r}
+snp_data = read_csv("./snp.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(., date, into = c("year","month","day")) %>% 
+  mutate(year = as.integer(year)) %>% 
+  mutate(month = as.integer(month)) %>% 
+  select(year, month, everything(), -day)
+snp_data$month = month.abb[snp_data$month]
+
+snp_data
+```
+

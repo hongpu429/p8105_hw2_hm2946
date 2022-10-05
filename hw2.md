@@ -347,3 +347,42 @@ mon_data
     ##  9  1947 Sep        23      51     253      23      45     198         1
     ## 10  1947 Oct        23      51     253      23      45     198         1
     ## # … with 812 more rows
+
+``` r
+snp_data = read_csv("./snp.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(., date, into = c("year","month","day")) %>% 
+  mutate(year = as.integer(year)) %>% 
+  mutate(month = as.integer(month)) %>% 
+  select(year, month, everything(), -day)
+```
+
+    ## Rows: 787 Columns: 2
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (1): date
+    ## dbl (1): close
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+snp_data$month = month.abb[snp_data$month]
+
+snp_data
+```
+
+    ## # A tibble: 787 × 3
+    ##     year month close
+    ##    <int> <chr> <dbl>
+    ##  1     7 Jan   2080.
+    ##  2     6 Jan   2063.
+    ##  3     5 Jan   2107.
+    ##  4     4 Jan   2086.
+    ##  5     3 Feb   2068.
+    ##  6     2 Feb   2104.
+    ##  7     1 Feb   1995.
+    ##  8    12 Jan   2059.
+    ##  9    11 Mar   2068.
+    ## 10    10 Jan   2018.
+    ## # … with 777 more rows
