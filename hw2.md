@@ -353,8 +353,8 @@ snp_data = read_csv("./snp.csv") %>%
   janitor::clean_names() %>% 
   separate(., date, into = c("year","month","day")) %>% 
   mutate(year = as.integer(year)) %>% 
-  mutate(month = as.integer(month)) %>% 
-  select(year, month, everything(), -day)
+  mutate(month = as.integer(month)) %>%
+  select(year, month, close, -day)
 ```
 
     ## Rows: 787 Columns: 2
@@ -422,3 +422,8 @@ une_data
     ##  9  1948 sep            3.8
     ## 10  1948 oct            3.7
     ## # … with 806 more rows
+
+``` r
+combined_1 = inner_join(snp_data, mon_data, by = c("year","month"))
+combined_2 = inner_join(combined_1, une_data, by = c("year","month"))
+```
