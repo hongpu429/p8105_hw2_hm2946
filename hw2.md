@@ -314,7 +314,7 @@ mon_data = read_csv("./pols-month.csv") %>%
   mutate(year = as.integer(year)) %>% 
   mutate(month = as.integer(month)) %>% 
   mutate(day = as.integer(day)) %>% 
-  mutate(president = prez_gop + prez_dem) %>% 
+  mutate(president = ifelse(prez_dem == 1, "dem", "gop")) %>% 
   select(-prez_gop, -prez_dem, -day)
 ```
 
@@ -335,24 +335,25 @@ mon_data
 
     ## # A tibble: 822 × 9
     ##     year month gov_gop sen_gop rep_gop gov_dem sen_dem rep_dem president
-    ##    <int> <chr>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>     <dbl>
-    ##  1  1947 Jan        23      51     253      23      45     198         1
-    ##  2  1947 Feb        23      51     253      23      45     198         1
-    ##  3  1947 Mar        23      51     253      23      45     198         1
-    ##  4  1947 Apr        23      51     253      23      45     198         1
-    ##  5  1947 May        23      51     253      23      45     198         1
-    ##  6  1947 Jun        23      51     253      23      45     198         1
-    ##  7  1947 Jul        23      51     253      23      45     198         1
-    ##  8  1947 Aug        23      51     253      23      45     198         1
-    ##  9  1947 Sep        23      51     253      23      45     198         1
-    ## 10  1947 Oct        23      51     253      23      45     198         1
+    ##    <int> <chr>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl> <chr>    
+    ##  1  1947 Jan        23      51     253      23      45     198 dem      
+    ##  2  1947 Feb        23      51     253      23      45     198 dem      
+    ##  3  1947 Mar        23      51     253      23      45     198 dem      
+    ##  4  1947 Apr        23      51     253      23      45     198 dem      
+    ##  5  1947 May        23      51     253      23      45     198 dem      
+    ##  6  1947 Jun        23      51     253      23      45     198 dem      
+    ##  7  1947 Jul        23      51     253      23      45     198 dem      
+    ##  8  1947 Aug        23      51     253      23      45     198 dem      
+    ##  9  1947 Sep        23      51     253      23      45     198 dem      
+    ## 10  1947 Oct        23      51     253      23      45     198 dem      
     ## # … with 812 more rows
 
 ``` r
 snp_data = read_csv("./snp.csv") %>% 
   janitor::clean_names() %>% 
-  separate(., date, into = c("year","month","day")) %>% 
+  separate(., date, into = c("month","day","year")) %>% 
   mutate(year = as.integer(year)) %>% 
+  mutate(year = ifelse(year > 15, year + 1900, year + 2000)) %>%
   mutate(month = as.integer(month)) %>%
   select(year, month, close, -day)
 ```
@@ -374,26 +375,26 @@ snp_data
 
     ## # A tibble: 787 × 3
     ##     year month close
-    ##    <int> <chr> <dbl>
-    ##  1     7 Jan   2080.
-    ##  2     6 Jan   2063.
-    ##  3     5 Jan   2107.
-    ##  4     4 Jan   2086.
-    ##  5     3 Feb   2068.
-    ##  6     2 Feb   2104.
-    ##  7     1 Feb   1995.
-    ##  8    12 Jan   2059.
-    ##  9    11 Mar   2068.
-    ## 10    10 Jan   2018.
+    ##    <dbl> <chr> <dbl>
+    ##  1  2015 Jul   2080.
+    ##  2  2015 Jun   2063.
+    ##  3  2015 May   2107.
+    ##  4  2015 Apr   2086.
+    ##  5  2015 Mar   2068.
+    ##  6  2015 Feb   2104.
+    ##  7  2015 Jan   1995.
+    ##  8  2014 Dec   2059.
+    ##  9  2014 Nov   2068.
+    ## 10  2014 Oct   2018.
     ## # … with 777 more rows
 
 ``` r
 une_data = read_csv("./unemployment.csv") %>% 
-  janitor::clean_names() %>% 
   pivot_longer(
-    jan:dec,
+    Jan:Dec,
     names_to = "month",
-    values_to = "unemployment")
+    values_to = "unemployment") %>% 
+  janitor::clean_names()
 ```
 
     ## Rows: 68 Columns: 13
@@ -411,19 +412,55 @@ une_data
     ## # A tibble: 816 × 3
     ##     year month unemployment
     ##    <dbl> <chr>        <dbl>
-    ##  1  1948 jan            3.4
-    ##  2  1948 feb            3.8
-    ##  3  1948 mar            4  
-    ##  4  1948 apr            3.9
-    ##  5  1948 may            3.5
-    ##  6  1948 jun            3.6
-    ##  7  1948 jul            3.6
-    ##  8  1948 aug            3.9
-    ##  9  1948 sep            3.8
-    ## 10  1948 oct            3.7
+    ##  1  1948 Jan            3.4
+    ##  2  1948 Feb            3.8
+    ##  3  1948 Mar            4  
+    ##  4  1948 Apr            3.9
+    ##  5  1948 May            3.5
+    ##  6  1948 Jun            3.6
+    ##  7  1948 Jul            3.6
+    ##  8  1948 Aug            3.9
+    ##  9  1948 Sep            3.8
+    ## 10  1948 Oct            3.7
     ## # … with 806 more rows
 
 ``` r
-combined_1 = inner_join(snp_data, mon_data, by = c("year","month"))
-combined_2 = inner_join(combined_1, une_data, by = c("year","month"))
+combined_1 = left_join(snp_data, mon_data, by = c("year","month"))
+combined_2 = left_join(combined_1, une_data, by = c("year","month"))
+
+combined_1
 ```
+
+    ## # A tibble: 787 × 10
+    ##     year month close gov_gop sen_gop rep_gop gov_dem sen_dem rep_dem president
+    ##    <dbl> <chr> <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl> <chr>    
+    ##  1  2015 Jul   2080.      NA      NA      NA      NA      NA      NA <NA>     
+    ##  2  2015 Jun   2063.      31      54     246      18      44     188 dem      
+    ##  3  2015 May   2107.      31      54     245      18      44     188 dem      
+    ##  4  2015 Apr   2086.      31      54     244      18      44     188 dem      
+    ##  5  2015 Mar   2068.      31      54     245      18      44     188 dem      
+    ##  6  2015 Feb   2104.      31      54     245      18      44     188 dem      
+    ##  7  2015 Jan   1995.      31      54     245      18      44     188 dem      
+    ##  8  2014 Dec   2059.      29      45     235      21      53     201 dem      
+    ##  9  2014 Nov   2068.      29      45     235      21      53     201 dem      
+    ## 10  2014 Oct   2018.      29      45     234      21      53     199 dem      
+    ## # … with 777 more rows
+
+``` r
+combined_2
+```
+
+    ## # A tibble: 787 × 11
+    ##     year month close gov_gop sen_gop rep_gop gov_dem sen_dem rep_dem president
+    ##    <dbl> <chr> <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl> <chr>    
+    ##  1  2015 Jul   2080.      NA      NA      NA      NA      NA      NA <NA>     
+    ##  2  2015 Jun   2063.      31      54     246      18      44     188 dem      
+    ##  3  2015 May   2107.      31      54     245      18      44     188 dem      
+    ##  4  2015 Apr   2086.      31      54     244      18      44     188 dem      
+    ##  5  2015 Mar   2068.      31      54     245      18      44     188 dem      
+    ##  6  2015 Feb   2104.      31      54     245      18      44     188 dem      
+    ##  7  2015 Jan   1995.      31      54     245      18      44     188 dem      
+    ##  8  2014 Dec   2059.      29      45     235      21      53     201 dem      
+    ##  9  2014 Nov   2068.      29      45     235      21      53     201 dem      
+    ## 10  2014 Oct   2018.      29      45     234      21      53     199 dem      
+    ## # … with 777 more rows, and 1 more variable: unemployment <dbl>

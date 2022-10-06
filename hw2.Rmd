@@ -157,7 +157,7 @@ mon_data = read_csv("./pols-month.csv") %>%
   mutate(year = as.integer(year)) %>% 
   mutate(month = as.integer(month)) %>% 
   mutate(day = as.integer(day)) %>% 
-  mutate(president = prez_gop + prez_dem) %>% 
+  mutate(president = ifelse(prez_dem == 1, "dem", "gop")) %>% 
   select(-prez_gop, -prez_dem, -day)
 mon_data$month = month.abb[mon_data$month]
 
@@ -168,8 +168,9 @@ mon_data
 ```{r}
 snp_data = read_csv("./snp.csv") %>% 
   janitor::clean_names() %>% 
-  separate(., date, into = c("year","month","day")) %>% 
+  separate(., date, into = c("month","day","year")) %>% 
   mutate(year = as.integer(year)) %>% 
+  mutate(year = ifelse(year > 15, year + 1900, year + 2000)) %>%
   mutate(month = as.integer(month)) %>%
   select(year, month, close, -day)
 snp_data$month = month.abb[snp_data$month]
@@ -179,17 +180,19 @@ snp_data
 
 ```{r}
 une_data = read_csv("./unemployment.csv") %>% 
-  janitor::clean_names() %>% 
   pivot_longer(
-    jan:dec,
+    Jan:Dec,
     names_to = "month",
-    values_to = "unemployment")
+    values_to = "unemployment") %>% 
+  janitor::clean_names()
 
 une_data
 ```
 
 ```{r}
-combined_1 = inner_join(snp_data, mon_data, by = c("year","month"))
-combined_2 = inner_join(combined_1, une_data, by = c("year","month"))
-```
+combined_1 = left_join(snp_data, mon_data, by = c("year","month"))
+combined_2 = left_join(combined_1, une_data, by = c("year","month"))
 
+combined_1
+combined_2
+```
