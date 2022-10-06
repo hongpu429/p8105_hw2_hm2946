@@ -464,3 +464,5 @@ combined_2
     ##  9  2014 Nov   2068.      29      45     235      21      53     201 dem      
     ## 10  2014 Oct   2018.      29      45     234      21      53     199 dem      
     ## # … with 777 more rows, and 1 more variable: unemployment <dbl>
+
+## the first table contains the president variable and many others, the second contains “close”, and the last is about unemployment. We combine all them in the combined_2. The range of year is from 1950 to 2015. We can see how the political party influence the nation’s economic status, like through th unemployment rate.

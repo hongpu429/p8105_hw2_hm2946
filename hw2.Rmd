@@ -196,3 +196,4 @@ combined_2 = left_join(combined_1, une_data, by = c("year","month"))
 combined_1
 combined_2
 ```
+## the first table contains the president variable and many others, the second contains "close", and the last is about unemployment. We combine all them in the combined_2. The range of year is from 1950 to 2015. We can see how the political party influence the nation's economic status, like through th unemployment rate. 
